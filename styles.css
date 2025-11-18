@@ -251,4 +251,48 @@ body {
     background: linear-gradient(135deg, #f8f9fa, #e9ecef);
     padding: 20px;
     border-radius: 15px;
-    text-align: center
+    text-align: center;
+}
+
+.badge.unlocked {
+    background: linear-gradient(135deg, #4ecdc4, #44a08d);
+    color: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.badge.locked {
+    opacity: 0.6;
+    filter: grayscale(0.5);
+}
+
+.badge-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+footer {
+    text-align: center;
+    color: white;
+    padding: 20px;
+    margin-top: 40px;
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .game-header h1 {
+        font-size: 2rem;
+    }
+    .wheel {
+        width: 250px;
+        height: 250px;
+    }
+    .characters-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@keyframes popIn {
+    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+    70% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
