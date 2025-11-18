@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Fortune - Learn & Play!</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="floating-letters">
+        <span>A</span><span>B</span><span>C</span><span>D</span><span>E</span>
+        <span>F</span><span>G</span><span>H</span><span>I</span><span>J</span>
+        <span>K</span><span>L</span><span>M</span><span>N</span><span>O</span>
+        <span>P</span><span>Q</span><span>R</span><span>S</span><span>T</span>
+        <span>U</span><span>V</span><span>W</span><span>X</span><span>Y</span>
+        <span>Z</span>
+    </div>
+
+    <header class="game-header">
+        <h1>🎡 English Fortune 🎡</h1>
+        <p>Learn English & Win Prizes!</p>
+    </header>
+
+    <div class="user-stats">
+        <div class="stat-item">
+            <div class="stat-value" id="points">0</div>
+            <div>Points</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="level">1</div>
+            <div>Level</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="spins">0</div>
+            <div>Spins</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="lessons">0</div>
+            <div>Lessons</div>
+        </div>
+    </div>
+
+    <div class="fortune-wheel-container">
+        <h2>Wheel of Fortune</h2>
+        <p>Complete lessons to earn spins!</p>
+        <div class="wheel" id="fortuneWheel"></div>
+        <button class="spin-btn" id="spinButton">Spin Wheel (0/1)</button>
+        <div class="spin-info">Complete a lesson to get a spin!</div>
+    </div>
+
+    <div class="container">
+        <h2 class="section-title">Choose Your Character:</h2>
+        
+        <div class="characters-grid">
+            <div class="character-card" onclick="startLesson('peppa')">
+                <div class="character-icon">🐷</div>
+                <h3>Peppa Pig</h3>
+                <p>Beginner English Lessons</p>
+                <div class="progress">
+                    <div class="progress-bar" style="width: 30%"></div>
+                </div>
+                <div class="reward-info">+1 Spin Reward</div>
+            </div>
+
+            <div class="character-card" onclick="startLesson('mickey')">
+                <div class="character-icon">🐭</div>
+                <h3>Mickey Mouse</h3>
+                <p>Basic Phrases & Vocabulary</p>
+                <div class="progress">
+                    <div class="progress-bar" style="width: 10%"></div>
+                </div>
+                <div class="reward-info">+1 Spin Reward</div>
+            </div>
+
+            <div class="character-card" onclick="startLesson('paw')">
+                <div class="character-icon">🐾</div>
+                <h3>Paw Patrol</h3>
+                <p>Action Words & Commands</p>
+                <div class="progress">
+                    <div class="progress-bar" style="width: 0%"></div>
+                </div>
+                <div class="reward-info">+1 Spin Reward</div>
+            </div>
+
+            <div class="character-card" onclick="startLesson('dora')">
+                <div class="character-icon">🧭</div>
+                <h3>Dora Explorer</h3>
+                <p>Adventure Vocabulary</p>
+                <div class="progress">
+                    <div class="progress-bar" style="width: 0%"></div>
+                </div>
+                <div class="reward-info">+1 Spin Reward</div>
+            </div>
+
+            <div class="character-card" onclick="startLesson('spongebob')">
+                <div class="character-icon">🧽</div>
+                <h3>SpongeBob</h3>
+                <p>Fun Conversations</p>
+                <div class="progress">
+                    <div class="progress-bar" style="width: 0%"></div>
+                </div>
+                <div class="reward-info">+1 Spin Reward</div>
+            </div>
+        </div>
+
+        <div class="achievements-section">
+            <h2 class="section-title">Your Achievements</h2>
+            <div class="achievements-grid">
+                <div class="badge unlocked">
+                    <div class="badge-icon">🎯</div>
+                    <h4>First Steps</h4>
+                    <p>Complete your first lesson</p>
+                </div>
+                <div class="badge locked">
+                    <div class="badge-icon">⭐</div>
+                    <h4>English Star</h4>
+                    <p>Score 100 points</p>
+                </div>
+                <div class="badge locked">
+                    <div class="badge-icon">🏆</div>
+                    <h4>Wheel Champion</h4>
+                    <p>Spin the wheel 10 times</p>
+                </div>
+                <div class="badge locked">
+                    <div class="badge-icon">📚</div>
+                    <h4>Book Worm</h4>
+                    <p>Complete 5 lessons</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2024 English Fortune Game | Made with ❤️ for learning</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
