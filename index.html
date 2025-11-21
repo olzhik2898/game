@@ -154,12 +154,11 @@
     <script src="js/scroll.js"></script>
 
 <script>
-// 🔥 ВСТАВЬТЕ ВАШ 37-СИМВОЛЬНЫЙ КЛЮЧ:
-
-const PART1 = 'hf_';                          // 3 символа
-const PART2 = 'VlDDDyNsaiuZfdV';      // 15 символов  
-const PART3 = 'OTePtnZwRmsoRrIR';   // 16 символов
-const PART4 = 'mup';          // 3 символа
+// 🔥 ВАШ 37-СИМВОЛЬНЫЙ КЛЮЧ:
+const PART1 = 'hf_';                          
+const PART2 = 'VlDDDyNsaiuZfdV';      
+const PART3 = 'OTePtnZwRmsoRrIR';   
+const PART4 = 'mup';          
 
 const API_KEY = PART1 + PART2 + PART3 + PART4;
 
@@ -170,10 +169,8 @@ const API_CONFIG = {
 
 // УМНЫЙ ИИ С REAL API
 async function getAIResponse(userMessage) {
-    // Проверка что ключ вставлен
     if (PART2.includes('ваши_первые')) {
-        addBotMessage("❌ Вставьте ваш реальный API ключ в код! Найдите строки 5-8 и замените пример на ваш ключ.");
-        return;
+        return "❌ Вставьте ваш реальный API ключ в код!";
     }
     
     try {
@@ -188,105 +185,113 @@ async function getAIResponse(userMessage) {
                 messages: [
                     {
                         role: "system",
-                        content: `Ты - весёлый и дружелюбный AI учитель английского для детей. Отвечай на русском и английском, используй эмодзи, создавай диалоги, помогай с грамматикой.`
+                        content: `Ты - весёлый AI учитель английского для детей. Отвечай на русском и английском, используй эмодзи.`
                     },
                     {
                         role: "user", 
                         content: userMessage
                     }
                 ],
-                max_tokens: 800,
+                max_tokens: 500,
                 temperature: 0.7
             })
         });
 
-        if (!response.ok) {
-            throw new Error(`API error: ${response.status}`);
-        }
-
+        if (!response.ok) throw new Error(`API error: ${response.status}`);
         const data = await response.json();
         return data.choices[0].message.content;
         
     } catch (error) {
-        console.error('API Error:', error);
         return "❌ Ошибка API: " + error.message;
     }
 }
 
-// Остальной код чата
+// ПЕРЕМЕННЫЕ
 let isChatOpen = false;
-let conversationHistory = [];
 
+// ФУНКЦИИ УПРАВЛЕНИЯ ЧАТОМ
 function toggleChatbot() {
+    console.log('🔄 Кнопка нажата!');
     const chatbot = document.getElementById('ai-chatbot');
     const toggleBtn = document.getElementById('chatbot-toggle-btn');
     
+    if (!chatbot || !toggleBtn) {
+        console.log('❌ Элементы не найдены!');
+        return;
+    }
+    
     isChatOpen = !isChatOpen;
+    console.log('Chat open:', isChatOpen);
     
     if (isChatOpen) {
         chatbot.style.display = 'flex';
-        toggleBtn.style.animation = 'none';
         toggleBtn.innerHTML = '✕';
         toggleBtn.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
+        toggleBtn.style.animation = 'none';
     } else {
         chatbot.style.display = 'none';
-        toggleBtn.style.animation = 'pulse 2s infinite';
         toggleBtn.innerHTML = '🤖';
         toggleBtn.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a52)';
+        toggleBtn.style.animation = 'pulse 2s infinite';
     }
 }
 
 function closeChatbot() {
+    console.log('Закрытие чата');
     const chatbot = document.getElementById('ai-chatbot');
     const toggleBtn = document.getElementById('chatbot-toggle-btn');
     
-    chatbot.style.display = 'none';
+    if (chatbot) chatbot.style.display = 'none';
+    if (toggleBtn) {
+        toggleBtn.innerHTML = '🤖';
+        toggleBtn.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a52)';
+        toggleBtn.style.animation = 'pulse 2s infinite';
+    }
     isChatOpen = false;
-    toggleBtn.style.animation = 'pulse 2s infinite';
-    toggleBtn.innerHTML = '🤖';
-    toggleBtn.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a52)';
 }
 
 function quickQuestion(question) {
-    document.getElementById('chat-input').value = question;
-    sendMessage();
+    const input = document.getElementById('chat-input');
+    if (input) {
+        input.value = question;
+        sendMessage();
+    }
 }
 
 async function sendMessage() {
     const input = document.getElementById('chat-input');
     const sendBtn = document.getElementById('send-btn');
-    const message = input.value.trim();
     
+    if (!input || !sendBtn) return;
+    
+    const message = input.value.trim();
     if (!message) return;
 
     sendBtn.disabled = true;
     sendBtn.innerHTML = '⏳';
-    sendBtn.style.background = 'linear-gradient(135deg, #ffa726, #ff9800)';
     
     addMessage(message, 'user');
     input.value = '';
 
     const typingIndicator = document.getElementById('typing-indicator');
-    typingIndicator.style.display = 'block';
+    if (typingIndicator) typingIndicator.style.display = 'block';
 
     try {
         const aiResponse = await getAIResponse(message);
-        if (aiResponse) {
-            addBotMessage(aiResponse);
-        }
+        addBotMessage(aiResponse);
     } catch (error) {
-        console.error('Error:', error);
-        addBotMessage("❌ Ошибка соединения с ИИ");
+        addBotMessage("❌ Ошибка: " + error.message);
     } finally {
         sendBtn.disabled = false;
         sendBtn.innerHTML = '📨';
-        sendBtn.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-        typingIndicator.style.display = 'none';
+        if (typingIndicator) typingIndicator.style.display = 'none';
     }
 }
 
 function addMessage(text, sender) {
     const messages = document.getElementById('chat-messages');
+    if (!messages) return;
+    
     const messageDiv = document.createElement('div');
     messageDiv.className = 'message ' + sender + '-message';
     
@@ -302,11 +307,12 @@ function addMessage(text, sender) {
     
     messages.appendChild(messageDiv);
     messages.scrollTop = messages.scrollHeight;
-    conversationHistory.push({ sender, text, timestamp: new Date() });
 }
 
 function addBotMessage(text) {
     const messages = document.getElementById('chat-messages');
+    if (!messages) return;
+    
     const messageDiv = document.createElement('div');
     messageDiv.className = 'message bot-message';
     
@@ -322,37 +328,109 @@ function addBotMessage(text) {
     
     messages.appendChild(messageDiv);
     messages.scrollTop = messages.scrollHeight;
-    conversationHistory.push({ sender: 'bot', text, timestamp: new Date() });
 }
 
-// Инициализация - УБЕДИТЕСЬ ЧТО ЭТОТ КОД ВЫПОЛНЯЕТСЯ
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 ИИ бот загружается...');
+// ИНИЦИАЛИЗАЦИЯ - ГАРАНТИРУЕМ ЗАГРУЗКУ
+function initChatbot() {
+    console.log('🚀 Инициализация ИИ бота...');
     
-    const chatInput = document.getElementById('chat-input');
     const toggleBtn = document.getElementById('chatbot-toggle-btn');
+    const chatInput = document.getElementById('chat-input');
     
-    // Явно назначаем обработчик
     if (toggleBtn) {
-        toggleBtn.onclick = toggleChatbot;
-        console.log('✅ Кнопка ИИ найдена и настроена');
+        console.log('✅ Кнопка найдена, назначаем обработчик');
+        toggleBtn.addEventListener('click', toggleChatbot);
     } else {
-        console.log('❌ Кнопка ИИ не найдена!');
+        console.log('❌ Кнопка не найдена!');
     }
     
     if (chatInput) {
         chatInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
+            if (e.key === 'Enter') sendMessage();
         });
     }
     
-    console.log('🤖 AI English Teacher загружен!');
-});
+    console.log('🤖 ИИ бот готов к работе!');
+}
+
+// Запускаем когда страница полностью загружена
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initChatbot);
+} else {
+    initChatbot();
+}
 </script>
 
-<!-- БОЛЬШАЯ КРАСНАЯ КНОПКА ИИ -->
+<!-- ОКНО ЧАТА -->
+<div id="ai-chatbot" style="
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 400px;
+    height: 600px;
+    background: white;
+    border: 3px solid #667eea;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    z-index: 10000;
+    display: none;
+    flex-direction: column;
+    font-family: 'Comic Sans MS', cursive;
+">
+    <!-- Заголовок -->
+    <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px; border-radius: 17px 17px 0 0;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="font-size: 24px;">🤖</div>
+                <div>
+                    <h4 style="margin: 0; font-size: 18px;">AI English Teacher</h4>
+                    <small style="opacity: 0.9;">Настоящий ИИ для практики!</small>
+                </div>
+            </div>
+            <button onclick="closeChatbot()" style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 20px; cursor: pointer; padding: 0; width: 30px; height: 30px; border-radius: 50%;">×</button>
+        </div>
+    </div>
+
+    <!-- Сообщения -->
+    <div id="chat-messages" style="flex: 1; padding: 20px; overflow-y: auto; background: #f8f9fa;">
+        <div class="message bot-message">
+            <div class="message-header">
+                <strong>AI Teacher:</strong> 
+                <small>только что</small>
+            </div>
+            <div class="message-text">
+                👋 <strong>Hello! Привет! 🎉</strong><br><br>
+                Я твой AI учитель английского!<br>
+                Готов помочь с любыми вопросами! 😊
+            </div>
+        </div>
+    </div>
+
+    <!-- Индикатор набора -->
+    <div id="typing-indicator" style="display: none; padding: 15px 20px; background: #f8f9fa; border-top: 1px solid #eee;">
+        <div style="display: flex; align-items: center; gap: 12px; color: #667eea; font-size: 14px;">
+            <div class="typing-dots">
+                <span></span><span></span><span></span>
+            </div>
+            <span>ИИ думает...</span>
+        </div>
+    </div>
+
+    <!-- Панель ввода -->
+    <div style="padding: 20px; background: white; border-radius: 0 0 17px 17px;">
+        <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+            <button onclick="quickQuestion('Создай диалог в магазине')" class="quick-btn">🛍️ Диалог</button>
+            <button onclick="quickQuestion('Объясни Present Simple')" class="quick-btn">📖 Грамматика</button>
+            <button onclick="quickQuestion('Расскажи шутку')" class="quick-btn">😄 Шутка</button>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <input type="text" id="chat-input" placeholder="Спроси ИИ о чём угодно..." style="flex: 1; padding: 15px 20px; border: 2px solid #e0e0e0; border-radius: 25px; outline: none; font-family: 'Comic Sans MS', cursive; font-size: 14px;">
+            <button onclick="sendMessage()" id="send-btn" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 50%; width: 50px; height: 50px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center;">📨</button>
+        </div>
+    </div>
+</div>
+
+<!-- БОЛЬШАЯ КНОПКА -->
 <button id="chatbot-toggle-btn" style="
     position: fixed;
     bottom: 30px;
@@ -367,7 +445,6 @@ document.addEventListener('DOMContentLoaded', function() {
     cursor: pointer;
     box-shadow: 0 8px 30px rgba(255, 107, 107, 0.6);
     z-index: 10001;
-    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -375,11 +452,25 @@ document.addEventListener('DOMContentLoaded', function() {
 ">🤖</button>
 
 <style>
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
+.message { margin-bottom: 20px; padding: 15px; border-radius: 18px; max-width: 90%; animation: fadeIn 0.4s ease; line-height: 1.5; }
+.bot-message { background: linear-gradient(135deg, #f8f9ff, #e3f2fd); border: 1px solid #e1e5e9; border-bottom-left-radius: 5px; align-self: flex-start; }
+.user-message { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-bottom-right-radius: 5px; align-self: flex-end; margin-left: auto; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); }
+.message-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 12px; }
+.message-header small { opacity: 0.7; }
+.message-text { font-size: 14px; line-height: 1.6; }
+#chat-messages { display: flex; flex-direction: column; }
+.quick-btn { padding: 8px 12px; border: 2px solid #667eea; background: white; border-radius: 20px; cursor: pointer; font-size: 12px; transition: all 0.3s ease; color: #667eea; font-family: 'Comic Sans MS', cursive; }
+.quick-btn:hover { background: #667eea; color: white; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); }
+.typing-dots { display: flex; gap: 4px; }
+.typing-dots span { width: 8px; height: 8px; background: #667eea; border-radius: 50%; animation: typing 1.4s infinite ease-in-out; }
+.typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+.typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+@keyframes typing { 0%,80%,100% { transform: scale(0); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+#chat-input:focus { border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+#send-btn:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4); }
+#send-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 </style>
 </body>
 </html>
