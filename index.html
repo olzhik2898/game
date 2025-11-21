@@ -154,13 +154,9 @@
     <script src="js/scroll.js"></script>
 
 <script>
-// 🔥 ВАШ 37-СИМВОЛЬНЫЙ КЛЮЧ:
-const PART1 = 'hf_';                          
-const PART2 = 'VlDDDyNsaiuZfdV';      
-const PART3 = 'OTePtnZwRmsoRrIR';   
-const PART4 = 'mup';          
+// 🔥 ВСТАВЬТЕ ВАШ ПОЛНЫЙ API КЛЮЧ (37 СИМВОЛОВ):
 
-const API_KEY = PART1 + PART2 + PART3 + PART4;
+const API_KEY = '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';
 
 const API_CONFIG = {
     url: 'https://api.deepseek.com/chat/completions',
@@ -169,8 +165,14 @@ const API_CONFIG = {
 
 // УМНЫЙ ИИ С REAL API
 async function getAIResponse(userMessage) {
-    if (PART2.includes('ваши_первые')) {
-        return "❌ Вставьте ваш реальный API ключ в код!";
+    // Проверка что ключ вставлен
+    if (API_KEY.includes('ваш_полный_ключ')) {
+        return "❌ Вставьте ваш реальный API ключ в строку 4!";
+    }
+    
+    // Проверка длины ключа
+    if (API_KEY.length !== 37) {
+        return `❌ Неправильная длина ключа: ${API_KEY.length} символов (должно быть 37)`;
     }
     
     try {
@@ -185,24 +187,31 @@ async function getAIResponse(userMessage) {
                 messages: [
                     {
                         role: "system",
-                        content: `Ты - весёлый AI учитель английского для детей. Отвечай на русском и английском, используй эмодзи.`
+                        content: `Ты - весёлый и дружелюбный AI учитель английского для детей. Отвечай на русском и английском, используй эмодзи, создавай диалоги, помогай с грамматикой.`
                     },
                     {
                         role: "user", 
                         content: userMessage
                     }
                 ],
-                max_tokens: 500,
+                max_tokens: 800,
                 temperature: 0.7
             })
         });
 
-        if (!response.ok) throw new Error(`API error: ${response.status}`);
+        if (response.status === 401) {
+            return "❌ ОШИБКА 401: Неверный API ключ! Проверьте:\n1. Правильность ключа\n2. Активен ли ключ\n3. Лимиты использования";
+        }
+        
+        if (!response.ok) {
+            return `❌ Ошибка API: ${response.status} - ${response.statusText}`;
+        }
+
         const data = await response.json();
         return data.choices[0].message.content;
         
     } catch (error) {
-        return "❌ Ошибка API: " + error.message;
+        return "❌ Ошибка соединения: " + error.message;
     }
 }
 
@@ -211,17 +220,10 @@ let isChatOpen = false;
 
 // ФУНКЦИИ УПРАВЛЕНИЯ ЧАТОМ
 function toggleChatbot() {
-    console.log('🔄 Кнопка нажата!');
     const chatbot = document.getElementById('ai-chatbot');
     const toggleBtn = document.getElementById('chatbot-toggle-btn');
     
-    if (!chatbot || !toggleBtn) {
-        console.log('❌ Элементы не найдены!');
-        return;
-    }
-    
     isChatOpen = !isChatOpen;
-    console.log('Chat open:', isChatOpen);
     
     if (isChatOpen) {
         chatbot.style.display = 'flex';
@@ -237,17 +239,14 @@ function toggleChatbot() {
 }
 
 function closeChatbot() {
-    console.log('Закрытие чата');
     const chatbot = document.getElementById('ai-chatbot');
     const toggleBtn = document.getElementById('chatbot-toggle-btn');
     
-    if (chatbot) chatbot.style.display = 'none';
-    if (toggleBtn) {
-        toggleBtn.innerHTML = '🤖';
-        toggleBtn.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a52)';
-        toggleBtn.style.animation = 'pulse 2s infinite';
-    }
+    chatbot.style.display = 'none';
     isChatOpen = false;
+    toggleBtn.innerHTML = '🤖';
+    toggleBtn.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a52)';
+    toggleBtn.style.animation = 'pulse 2s infinite';
 }
 
 function quickQuestion(question) {
@@ -330,18 +329,13 @@ function addBotMessage(text) {
     messages.scrollTop = messages.scrollHeight;
 }
 
-// ИНИЦИАЛИЗАЦИЯ - ГАРАНТИРУЕМ ЗАГРУЗКУ
+// ИНИЦИАЛИЗАЦИЯ
 function initChatbot() {
-    console.log('🚀 Инициализация ИИ бота...');
-    
     const toggleBtn = document.getElementById('chatbot-toggle-btn');
     const chatInput = document.getElementById('chat-input');
     
     if (toggleBtn) {
-        console.log('✅ Кнопка найдена, назначаем обработчик');
         toggleBtn.addEventListener('click', toggleChatbot);
-    } else {
-        console.log('❌ Кнопка не найдена!');
     }
     
     if (chatInput) {
@@ -349,11 +343,9 @@ function initChatbot() {
             if (e.key === 'Enter') sendMessage();
         });
     }
-    
-    console.log('🤖 ИИ бот готов к работе!');
 }
 
-// Запускаем когда страница полностью загружена
+// Запускаем когда страница загружена
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initChatbot);
 } else {
@@ -421,7 +413,7 @@ if (document.readyState === 'loading') {
         <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
             <button onclick="quickQuestion('Создай диалог в магазине')" class="quick-btn">🛍️ Диалог</button>
             <button onclick="quickQuestion('Объясни Present Simple')" class="quick-btn">📖 Грамматика</button>
-            <button onclick="quickQuestion('Расскажи шутку')" class="quick-btn">😄 Шутка</button>
+            <button onclick="quickQuestion('Расскажи шутку на английском')" class="quick-btn">😄 Шутка</button>
         </div>
         <div style="display: flex; gap: 10px;">
             <input type="text" id="chat-input" placeholder="Спроси ИИ о чём угодно..." style="flex: 1; padding: 15px 20px; border: 2px solid #e0e0e0; border-radius: 25px; outline: none; font-family: 'Comic Sans MS', cursive; font-size: 14px;">
